@@ -1,0 +1,8 @@
+{
+	"folders":
+	[
+		{"path": "."},
+        {"path": "Z:\\SDK\\openssl-1.1.1c-win32-mingw\\include\\openssl"},
+        {"path": "Z:\\mingw-w64\\i686-8.1.0-win32-dwarf-rt_v6-rev0\\mingw32\\i686-w64-mingw32\\include"},
+	]
+}

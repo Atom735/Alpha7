@@ -1,0 +1,19 @@
+HTTP/1.1 301 Moved Permanently
+Content-Type: text/html; charset=utf-8
+Location: https://docs.microsoft.com/windows/desktop/winmsg/windowing
+Server: Microsoft-IIS/10.0
+X-MTPS-Info: Content removed, Id: ms632586, Locale: en-us, Pfv: VS.85
+X-Powered-By: ASP.NET
+x-instance: AZ_MSDN_TN_07
+X-UA-Compatible: IE=edge
+X-Powered-By: ARR/3.0
+X-Powered-By: ASP.NET
+x-instance: AZ_MSDN_TN_07
+strict-transport-security: max-age=31536000; includeSubdomains
+Content-Length: 176
+Date: Tue, 27 Aug 2019 23:29:57 GMT
+Connection: close
+
+<html><head><title>Object moved</title></head><body>
+<h2>Object moved to <a href="https://docs.microsoft.com/windows/desktop/winmsg/windowing">here</a>.</h2>
+</body></html>
