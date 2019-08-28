@@ -1,0 +1,406 @@
+
+    <!DOCTYPE html>
+	<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+		<head>
+			<meta charset="utf-8" />
+			Windows and Messages - Windows applications | Microsoft Docs
+			<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f59acded.site-ltr.css ">
+				<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
+					<script>
+					var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			azureHeaderLocale: 'en-us',
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasComments: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/windowing.md',
+		},
+		functions:{},
+		settings:{
+			extendBreadcrumb: true,
+		}
+	};
+	if (!('Promise' in window && 'resolve' in window.Promise && 'reject' in window.Promise && 'all' in window.Promise && 'race' in window.Promise)) {
+		document.write('<script src="https://static.docs.com/ui/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"><\/script>');
+	}
+	if (typeof fetch !== 'function') {
+		document.write('<script src="https://static.docs.com/ui/third-party/fetch/2.0.3/fetch.min.js" integrity="sha384-H3LQq82b6Mm80GYRHtRSlTwO9DoXctmYCVEYk9M8mp97lRzs6DuSrHVUg3SBP9w0" crossorigin="anonymous"><\/script>');
+	}
+	if (typeof HTMLTemplateElement === 'undefined') {
+		document.write('<script src="https://static.docs.com/ui/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"><\/script>');
+	}
+	if (typeof URL !== 'function') {
+		document.write('<script src="https://static.docs.com/ui/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"><\/script>');
+	}
+
+					<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous">
+						<script src="/_themes/docs.theme/master/en-us/_themes/scripts/6fc26531.index-docs.js">
+							<body lang="en-us" dir="ltr">
+								<div class="header-holder has-default-focus">
+									<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">
+									Skip to main content
+									<div id="headerAreaHolder" data-bi-name="header">
+										<div id="uhf-placeholder">
+											<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
+												<nav class="has-padding-none-mobile" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+													<ul id="page-breadcrumbs" class="breadcrumbs">
+														<div class="content-header-controls">
+															<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+																<span class="icon">
+																	<span class="docon docon-menu" aria-hidden="true">
+																		<span>
+																		Contents
+																		<div class="content-header-controls exit-focus">
+																			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+																				<span class="icon">
+																					<span class="docon docon-exit-mode" aria-hidden="true">
+																						<span>
+																						Exit focus mode
+																						<div id="page-actions" class="is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
+																							<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap">
+																								<li id="contenteditbtn">
+																									<a href="https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/windowing.md" class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit" data-original_content_git_url="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/winmsg/windowing.md" data-original_content_git_url_template="" data-pr_repo="" data-pr_branch="">
+																										<span class="icon">
+																											<span class="docon docon-edit-outline" aria-hidden="true">
+																												<span class="is-visually-hidden-touch is-hidden-portrait">
+																												Edit
+																												<li>
+																													<div class="sharing dropdown has-caret">
+																														<button class="dropdown-trigger button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+																															<span class="icon" aria-hidden="true">
+																																<span class="docon docon-sharing">
+																																	<span class="is-visually-hidden-touch is-hidden-portrait">
+																																	Share
+																																	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+																																		<ul data-bi-name="share-links">
+																																			<li>
+																																				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+																																					<span class="icon">
+																																						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true">
+																																							<span>
+																																							Twitter
+																																							<li>
+																																								<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+																																									<span class="icon">
+																																										<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true">
+																																											<span>
+																																											LinkedIn
+																																											<li>
+																																												<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+																																													<span class="icon">
+																																														<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true">
+																																															<span>
+																																															Facebook
+																																															<li>
+																																																<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-email" data-bi-name="email">
+																																																	<span class="icon">
+																																																		<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true">
+																																																			<span>
+																																																			Email
+																																																			<li>
+																																																				<div class="dropdown has-caret">
+																																																					<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+																																																						<span class="icon">
+																																																							<span class="docon docon-sun" aria-hidden="true">
+																																																								<span class="is-visually-hidden-touch is-hidden-portrait">
+																																																								Theme
+																																																								<div class="dropdown-menu" id="theme-menu" role="menu">
+																																																									<div class="theme-selector has-padding-small">
+																																																										<div class="theme is-block">
+																																																											<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
+					data-theme-to="light" role="menuitem">
+																																																												<span class="theme-light has-margin-right-small">
+																																																													<span
+							class="theme-selector-icon css-variable-support has-border is-inline-block has-body-background"
+							aria-hidden="true">
+																																																														<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+																																																															<rect width="22" height="14" class="has-fill-body-background" />
+																																																															Light
+																																																															<div class="theme is-block">
+																																																																<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
+					data-theme-to="dark" role="menuitem">
+																																																																	<span class="theme-dark has-margin-right-small">
+																																																																		<span
+							class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+																																																																			<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+																																																																				<rect width="22" height="14" class="has-fill-body-background" />
+																																																																				Dark
+																																																																				<div class="theme is-block">
+																																																																					<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
+					data-theme-to="high-contrast" role="menuitem">
+																																																																						<span class="theme-high-contrast has-margin-right-small">
+																																																																							<span
+							class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+																																																																								<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+																																																																									<rect width="22" height="14" class="has-fill-body-background" />
+																																																																									High contrast
+																																																																									<li>
+																																																																										<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-inner-focus has-text-primary is-small" href="#">
+																																																																										Sign in
+																																																																										<div class="dropdown has-caret auth-status-determined authenticated">
+																																																																											<button class="dropdown-trigger button is-text has-inner-focus is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
+																																																																												<span class="icon" aria-hidden="true">
+																																																																													<span class="image">
+																																																																														<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+																																																																															<span class="is-truncated has-margin-left-small" data-profile-property="userName">
+																																																																																<div class="dropdown-menu box" id="user-menu" role="menu">
+																																																																																	<div class="media is-user-dir">
+																																																																																		<div class="media-left">
+																																																																																			<span class="image is-64x64" aria-hidden="true">
+																																																																																				<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+																																																																																					<div class="media-content">
+																																																																																						<p class="title">
+																																																																																							<span class="is-truncated" style="max-width: 200px" data-profile-property="userName">
+																																																																																								<p class="subtitle has-margin-bottom-none">
+																																																																																									<span class="is-truncated" style="max-width: 200px" data-profile-property="upn">
+																																																																																										<ul class="is-unstyled has-margin-none has-margin-top-small">
+																																																																																											<li>
+																																																																																												<a href="/profile" data-profile-property="profileUrl">
+																																																																																												Profile
+																																																																																												<li>
+																																																																																													<a class="docs-sign-out" href="#">
+																																																																																													Sign out
+																																																																																													<button type="button" class="contents-button button is-small is-text is-hidden-tablet has-inner-focus is-hidden-tablet" aria-label="Contents" data-bi-name="contents-expand-">
+																																																																																														<span class="icon">
+																																																																																															<span class="docon docon-editor-list-bullet" aria-hidden="true">
+																																																																																																<span>
+																																																																																																Contents
+																																																																																																<div id="banner-holder" class="has-default-focus has-overflow-hidden">
+																																																																																																	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+																																																																																																		<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+																																																																																																			<div class="columns has-large-gaps is-gapless-mobile ">
+																																																																																																				<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+																																																																																																					<nav id="affixed-left-container" class="is-fixed is-flex is-flex-column" role="navigation" aria-label="Primary">
+																																																																																																						<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+																																																																																																							<div class="columns is-gapless-mobile has-large-gaps ">
+																																																																																																								<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+																																																																																																									<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+																																																																																																										<h1 id="windows-and-messages" sourcefile="winmsg/windowing.md" sourcestartlinenumber="9">
+																																																																																																										Windows and Messages
+																																																																																																										<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+																																																																																																											<li class="displayDate loading">
+																																																																																																												<time role="presentation" datetime="2018-05-31T00:00:00.000Z" data-article-date-source="ms.date">
+																																																																																																												05/31/2018
+																																																																																																												<li class="readingTime">
+																																																																																																												2 minutes to read
+																																																																																																												<li class="contributors-holder">
+																																																																																																													<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/windowing.md" title="2 Contributors" aria-label="2 Contributors">
+																																																																																																														<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
+																																																																																																															<li>
+																																																																																																																<img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/hickeys.png?size=32" role="presentation"/>
+																																																																																																																In this article
+																																																																																																																<p>
+																																																																																																																The following sections describe the elements of an application with a Windows-based graphical user interface.
+																																																																																																																<h3 id="in-this-section">
+																																																																																																																In This Section
+																																																																																																																<table>
+																																																																																																																	<thead>
+																																																																																																																		<tr>
+																																																																																																																			<th>
+																																																																																																																			Name
+																																																																																																																			<th>
+																																																																																																																			Description
+																																																																																																																			<tbody>
+																																																																																																																				<tr>
+																																																																																																																					<td>
+																																																																																																																						<a href="windows" data-linktype="relative-path">
+																																																																																																																						Windows
+																																																																																																																						<td>
+																																																																																																																						Discusses windows in general.
+																																																																																																																						<br>
+																																																																																																																							<tr>
+																																																																																																																								<td>
+																																																																																																																									<a href="window-classes" data-linktype="relative-path">
+																																																																																																																									Window Classes
+																																																																																																																									<td>
+																																																																																																																									Describes the types of window classes, how the system locates them, and the elements that define the default behavior of windows that belong to them.
+																																																																																																																									<br>
+																																																																																																																										<tr>
+																																																																																																																											<td>
+																																																																																																																												<a href="window-procedures" data-linktype="relative-path">
+																																																																																																																												Window Procedures
+																																																																																																																												<td>
+																																																																																																																												Discusses window procedures. Every window has an associated window procedure that processes all messages sent or posted to all windows of the class.
+																																																																																																																												<br>
+																																																																																																																													<tr>
+																																																																																																																														<td>
+																																																																																																																															<a href="messages-and-message-queues" data-linktype="relative-path">
+																																																																																																																															Messages and Message Queues
+																																																																																																																															<td>
+																																																																																																																															Describes messages and message queues and how to use them in your applications.
+																																																																																																																															<br>
+																																																																																																																																<tr>
+																																																																																																																																	<td>
+																																																																																																																																		<a href="timers" data-linktype="relative-path">
+																																																																																																																																		Timers
+																																																																																																																																		<td>
+																																																																																																																																		Discusses timers. A timer is an internal routine that repeatedly measures a specified interval, in milliseconds.
+																																																																																																																																		<br>
+																																																																																																																																			<tr>
+																																																																																																																																				<td>
+																																																																																																																																					<a href="window-properties" data-linktype="relative-path">
+																																																																																																																																					Window Properties
+																																																																																																																																					<td>
+																																																																																																																																					Discusses window properties. A window property is any data assigned to a window.
+																																																																																																																																					<br>
+																																																																																																																																						<tr>
+																																																																																																																																							<td>
+																																																																																																																																								<a href="configuration" data-linktype="relative-path">
+																																																																																																																																								Configuration
+																																																																																																																																								<td>
+																																																																																																																																								Describes the functions that can be used to control the configuration of system metrics and various system attributes such as double-click time, screen saver time-out, window border width, and desktop pattern.
+																																																																																																																																								<br>
+																																																																																																																																									<tr>
+																																																																																																																																										<td>
+																																																																																																																																											<a href="hooks" data-linktype="relative-path">
+																																																																																																																																											Hooks
+																																																																																																																																											<td>
+																																																																																																																																											Discusses hooks. A hook is a point in the system message-handling mechanism where an application can install a subroutine to monitor the message traffic.
+																																																																																																																																											<br>
+																																																																																																																																												<tr>
+																																																																																																																																													<td>
+																																																																																																																																														<a href="multiple-document-interface" data-linktype="relative-path">
+																																																																																																																																														Multiple Document Interface
+																																																																																																																																														<td>
+																																																																																																																																														Discusses the Multiple Document Interface which is a specification that defines a user interface for applications that enable the user to work with more than one document at the same time.
+																																																																																																																																														<br>
+																																																																																																																																															<p>
+																																																																																																																																															 
+																																																																																																																																															<p>
+																																																																																																																																															 
+																																																																																																																																															<p>
+																																																																																																																																															 
+																																																																																																																																															<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
+																																																																																																																																																<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
+																																																																																																																																																	<div class="binary-rating">
+																																																																																																																																																		<div class="binary-rating-buttons">
+																																																																																																																																																			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">
+																																																																																																																																																			Is this page helpful?
+																																																																																																																																																			<div>
+																																																																																																																																																				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
+																																																																																																																																																					<span class="icon docon docon-like" aria-hidden="true">
+																																																																																																																																																						<span>
+																																																																																																																																																						Yes
+																																																																																																																																																						<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
+																																																																																																																																																							<span class="icon docon docon-dislike" aria-hidden="true">
+																																																																																																																																																								<span>
+																																																																																																																																																								No
+																																																																																																																																																								<form class="feedback-verbatim-form is-hidden">
+																																																																																																																																																									<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+																																																																																																																																																										<label for="rating-feedback-mobile" class="visually-hidden">
+																																																																																																																																																										Any additional feedback?
+																																																																																																																																																										<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus">
+																																																																																																																																																											<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+																																																																																																																																																												<button class="skip-rating button is-text is-link is-small" type="button">
+																																																																																																																																																												Skip
+																																																																																																																																																												<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">
+																																																																																																																																																												Submit
+																																																																																																																																																												<div class="thankyou-rating is-hidden">
+																																																																																																																																																													<p>
+																																																																																																																																																													Thank you.
+																																																																																																																																																													<div class="footerContainer is-visible-interactive has-default-focus ">
+																																																																																																																																																														<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+																																																																																																																																																															<a data-mscc-ic="false" class="locale-selector-link" href="#" data-bi-name="select-locale">
+																																																																																																																																																																<span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true">
+																																																																																																																																																																	<span class="local-selector-link-text has-inner-focus">
+																																																																																																																																																																		<ul class="links" data-bi-name="footerlinks">
+																																																																																																																																																																			<li>
+																																																																																																																																																																				<a data-mscc-ic="false" href="https://docs.microsoft.com/previous-versions/" data-bi-name="archivelink">
+																																																																																																																																																																				Previous Version Docs
+																																																																																																																																																																				<li>
+																																																																																																																																																																					<a data-mscc-ic="false" href="https://docs.microsoft.com/teamblog" data-bi-name="bloglink">
+																																																																																																																																																																					Blog
+																																																																																																																																																																					<li>
+																																																																																																																																																																						<a data-mscc-ic="false" href="https://docs.microsoft.com/contribute" data-bi-name="contributorGuide">
+																																																																																																																																																																						Contribute
+																																																																																																																																																																						<li>
+																																																																																																																																																																							<a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">
+																																																																																																																																																																							Privacy &amp; Cookies
+																																																																																																																																																																							<li>
+																																																																																																																																																																								<a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">
+																																																																																																																																																																								Terms of Use
+																																																																																																																																																																								<li>
+																																																																																																																																																																									<a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">
+																																																																																																																																																																									Site Feedback
+																																																																																																																																																																									<li>
+																																																																																																																																																																										<a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">
+																																																																																																																																																																										Trademarks
+																																																																																																																																																																										<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+																																																																																																																																																																											<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
+																																																																																																																																																																												<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
+																																																																																																																																																																													<div class="binary-rating">
+																																																																																																																																																																														<div class="binary-rating-buttons">
+																																																																																																																																																																															<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">
+																																																																																																																																																																															Is this page helpful?
+																																																																																																																																																																															<div>
+																																																																																																																																																																																<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
+																																																																																																																																																																																	<span class="icon docon docon-like" aria-hidden="true">
+																																																																																																																																																																																		<span>
+																																																																																																																																																																																		Yes
+																																																																																																																																																																																		<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
+																																																																																																																																																																																			<span class="icon docon docon-dislike" aria-hidden="true">
+																																																																																																																																																																																				<span>
+																																																																																																																																																																																				No
+																																																																																																																																																																																				<form class="feedback-verbatim-form is-hidden">
+																																																																																																																																																																																					<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+																																																																																																																																																																																						<label for="rating-feedback-mobile" class="visually-hidden">
+																																																																																																																																																																																						Any additional feedback?
+																																																																																																																																																																																						<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus">
+																																																																																																																																																																																							<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+																																																																																																																																																																																								<button class="skip-rating button is-text is-link is-small" type="button">
+																																																																																																																																																																																								Skip
+																																																																																																																																																																																								<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">
+																																																																																																																																																																																								Submit
+																																																																																																																																																																																								<div class="thankyou-rating is-hidden">
+																																																																																																																																																																																									<p>
+																																																																																																																																																																																									Thank you.
+																																																																																																																																																																																									<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+																																																																																																																																																																																										<h3>
+																																																																																																																																																																																										In this article
+																																																																																																																																																																																										<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+																																																																																																																																																																																											<div id="openFeedbackContainer" class="openfeedback-container">
+																																																																																																																																																																																												<div class="footerContainer has-default-focus is-hidden-interactive ">
+																																																																																																																																																																																													<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+																																																																																																																																																																																														<a data-mscc-ic="false" class="locale-selector-link" href="#" data-bi-name="select-locale">
+																																																																																																																																																																																															<span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true">
+																																																																																																																																																																																																<span class="local-selector-link-text">
+																																																																																																																																																																																																	<ul class="links" data-bi-name="footerlinks">
+																																																																																																																																																																																																		<li>
+																																																																																																																																																																																																			<a data-mscc-ic="false" href="https://docs.microsoft.com/previous-versions/" data-bi-name="archivelink">
+																																																																																																																																																																																																			Previous Version Docs
+																																																																																																																																																																																																			<li>
+																																																																																																																																																																																																				<a data-mscc-ic="false" href="https://docs.microsoft.com/teamblog" data-bi-name="bloglink">
+																																																																																																																																																																																																				Blog
+																																																																																																																																																																																																				<li>
+																																																																																																																																																																																																					<a data-mscc-ic="false" href="https://docs.microsoft.com/contribute" data-bi-name="contributorGuide">
+																																																																																																																																																																																																					Contribute
+																																																																																																																																																																																																					<li>
+																																																																																																																																																																																																						<a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">
+																																																																																																																																																																																																						Privacy &amp; Cookies
+																																																																																																																																																																																																						<li>
+																																																																																																																																																																																																							<a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">
+																																																																																																																																																																																																							Terms of Use
+																																																																																																																																																																																																							<li>
+																																																																																																																																																																																																								<a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">
+																																																																																																																																																																																																								Site Feedback
+																																																																																																																																																																																																								<li>
+																																																																																																																																																																																																									<a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">
+																																																																																																																																																																																																									Trademarks
+																																																																																																																																																																																																									<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1">

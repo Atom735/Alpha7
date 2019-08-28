@@ -27,10 +27,12 @@ CPPFLAGS :=\
 CFLAGS :=\
 	-march=pentium4\
 	-Wall\
+	-g\
 
 LDFLAGS :=\
 	$(addprefix -L, $(PATH_LIBS))\
 	$(GCC_LIBS)\
+	-g\
 
 
 FILES :=\
@@ -55,6 +57,8 @@ main.exe : $(OBJECTS)
 
 obj/%.c.o : src/%.c
 	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
+
+obj/main.c.o :	src/main.c src/html.c
 
 
 

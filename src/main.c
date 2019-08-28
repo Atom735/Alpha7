@@ -11,128 +11,15 @@
 #include <stdio.h>
 #include <ctype.h>
 
-
-
 #include <windows.h>
 
 SSL_CTX *ctx_client;
 int _i = 0;
 CHAR _buf[0x1000];
 
-
-struct html_node {
-    LPCSTR type;
-    LPSTR pBegin;
-    UINT nSize;
-    struct html_node *pNext;
-};
-
-struct html_node * html_node_add(struct html_node *p, LPCSTR type, LPCSTR begin)
-{
-    p -> pNext = (struct html_node*)malloc(sizeof(struct html_node));
-    p = p -> pNext;
-    p -> type = type;
-    p -> pBegin = begin;
-    p -> nSize = 1;
-    p -> pNext = NULL;
-    return p;
-}
-
-void parse_file(LPCSTR szFileName)
-{
-    FILE *pF = fopen(szFileName,"rb");
-    fseek(pF, 0, SEEK_END);
-    UINT nFileLenght = ftell(pF);
-    fseek(pF, 0, SEEK_SET);
-    BYTE *pMem = (BYTE*)malloc(nFileLenght+1);
-    UINT nReaded = 0;
-    while ( nReaded < nFileLenght ) {
-        nReaded += fread(pMem+nReaded, 1, nFileLenght-nReaded, pF);
-    }
-    fclose(pF);
-
-    pMem[nFileLenght] = 0;
-
-    LPSTR p = pMem;
-
-    if(memcmp(p, "HTTP/1.1 200 OK", 15) != 0)
-    {
-        assert(0);
-    }
-    while(memcmp(p, "<!DOCTYPE html>", 15) != 0)
-    {
-        assert(p[15]!=0);
-        ++p;
-    }
-    struct html_node root = {};
-    root.type = "<!DOCTYPE html>";
-    root.pBegin = p;
-    root.nSize = 15;
-    struct html_node *pLast;
-    pLast = &root;
-    p += 15;
-    static LPCSTR _typeText = "#TEXT";
-    BOOL bInTag = FALSE;
-    while(*p)
-    {
-        if ( bInTag == FALSE )
-        {
-            if ( *p != '<' )
-            {
-                if ( pLast -> type != _typeText && isalnum(*p) )
-                {
-                    pLast = html_node_add(pLast, _typeText, p);
-                    ++p;
-                    continue;
-                }
-                if ( pLast -> type == _typeText )
-                {
-                    ++ pLast -> nSize;
-                    ++p;
-                    continue;
-                }
-                ++p;
-                continue;
-            }
-            else
-            {
-                bInTag = TRUE;
-                pLast = html_node_add(pLast, p+1, p);
-                ++p;
-                continue;
-            }
-        }
-        else
-        {
-            if ( *p != '>' )
-            {
-                ++pLast -> nSize;
-                ++p;
-                continue;
-            }
-            else
-            {
-                bInTag = FALSE;
-                ++pLast -> nSize;
-                ++p;
-                continue;
-            }
-        }
-    }
-
-    pF = fopen(szFileName,"wb");
-
-    pLast = &root;
-    while(pLast!=NULL)
-    {
-        fwrite(pLast -> pBegin, 1, pLast -> nSize, pF);
-        pLast = pLast -> pNext;
-    }
-    fclose(pF);
+#include "html.c"
 
 
-    free(pMem);
-}
 
 void get_https(LPCSTR szHost, LPCSTR szResource, LPCSTR szFileName)
 {
@@ -167,7 +54,6 @@ void get_https(LPCSTR szHost, LPCSTR szResource, LPCSTR szFileName)
     BIO_free_all(out);
     BIO_free_all(bio);
 
-    parse_file(szFileName);
 }
 
 
@@ -182,10 +68,12 @@ int main(int argc, char const *argv[])
     assert(ctx_client!=NULL);
     SSL_CTX_set_options(ctx_client, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3);
 
-    get_https("docs.microsoft.com", "/en-us/windows/win32/apiindex/windows-api-list", "windows-api-list.html");
+    // get_https("docs.microsoft.com", "/en-us/windows/win32/apiindex/windows-api-list", "windows-api-list.log");
+    rHtmlNode_SaveToFile ( rHtmlParser_OpenFile ( "windows-api-list.log" ), "windows-api-list.html" );
 
-    get_https("docs.microsoft.com", "/en-us/windows/win32/winmsg/windowing", "windowing.html");
+    // get_https("docs.microsoft.com", "/en-us/windows/win32/winmsg/windowing", "windowing.log");
 
+    rHtmlNode_SaveToFile ( rHtmlParser_OpenFile ( "windowing.log" ), "windowing.html" );
 
 
     SSL_CTX_free(ctx_client);
