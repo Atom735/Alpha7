@@ -41,8 +41,11 @@ FILES :=\
 SOURCES := $(addprefix src/, $(FILES))
 OBJECTS := $(addsuffix .o, $(addprefix obj/, $(FILES)))
 
-all : dirs main.exe $(EXE_FILES_TESTS)
-	main.exe
+EXE_FILES_TESTS := test_html
+
+all : dirs main.exe $(addsuffix .exe, $(EXE_FILES_TESTS))
+	test_html.exe "windows-api-list.log" "windows-api-list.out" 1
+
 
 dirs : obj
 
@@ -59,6 +62,9 @@ obj/%.c.o : src/%.c
 	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
 obj/main.c.o :	src/main.c src/html.c
+
+%.exe : src/%.c
+	$(CC) -o $@ $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $<
 
 
 

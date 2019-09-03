@@ -96,14 +96,43 @@ struct html_node * rHtmlNode_InsertBefore ( struct html_node * const pThis,
     return pChildNew;
 }
 
+// [https://www.w3.org/TR/html52/syntax.html#writing-html-documents-elements]
 enum
 {
-    DNT_NUL = 0,
+    DNT_NULL = 0,
     DNT_COMMENT,
     DNT_DOCUMENT,
     DNT_HTML,
     DNT_HEAD,
     DNT_META,
+    DNT_LINK,
+
+#if 0
+    /* Void elements */
+    DNT_AREA,
+    DNT_BASE,
+    DNT_BR,
+    DNT_COL,
+    DNT_EMBED,
+    DNT_HR,
+    DNT_IMG,
+    DNT_INPUT,
+    DNT_LINK,
+    DNT_META,
+    DNT_PARAM,
+    DNT_SOURCE,
+    DNT_TRACK,
+    DNT_WBR,
+    /* <template> */
+    DNT_TEMPLATE,
+    /* Raw text elements */
+    DNT_SCRIPT,
+    DNT_STYLE,
+    /* Escapable raw text elements */
+    DNT_TEXTAREA,
+    DNT_TITLE,
+    /* Normal elements */
+#endif
 };
 
 struct html_document
@@ -216,6 +245,20 @@ void rHtmlParserState_InHead ( struct html_document * const pDocument )
                 printf ( "HTML [%p] searched html_element [META]\n", pDocument );
                 p += o + 1;
                 struct html_element * const pE = rHtmlNode_NewElement ( pDocument, DNT_META );
+                rHtmlNode_AppendChild ( pDocument -> pParserLastNode, &(pE -> Node) );
+                if ( ( o = rHtmlToken_Attr ( p ) ) )
+                {
+                    pE -> pAttr = p+1;
+                    p [ o ] = 0;
+                    p += o + 1;
+                }
+                continue;
+            }
+            if ( ( o = rCmpStrN ( p+1, "link" ) ) && ( !isalpha ( p[o+1] ) ) )
+            {
+                printf ( "HTML [%p] searched html_element [LINK]\n", pDocument );
+                p += o + 1;
+                struct html_element * const pE = rHtmlNode_NewElement ( pDocument, DNT_LINK );
                 rHtmlNode_AppendChild ( pDocument -> pParserLastNode, &(pE -> Node) );
                 if ( ( o = rHtmlToken_Attr ( p ) ) )
                 {
