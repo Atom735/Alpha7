@@ -41,10 +41,10 @@ FILES :=\
 SOURCES := $(addprefix src/, $(FILES))
 OBJECTS := $(addsuffix .o, $(addprefix obj/, $(FILES)))
 
-EXE_FILES_TESTS := test_html
+EXE_FILES_TESTS := test_html html_parser
 
 all : dirs main.exe $(addsuffix .exe, $(EXE_FILES_TESTS))
-	test_html.exe "windows-api-list.log" "windows-api-list.out" 1
+	html_parser.exe "../_test_vk_auios.html" "_test_vk_auios.html"
 
 
 dirs : obj

@@ -291,7 +291,7 @@ struct html__text;
 
     void (*rParserMode)( struct html__document * const pThis, const UINT iTokenType, const PBYTE pData );
     void (*rParserModeOriginal)( struct html__document * const pThis, const UINT iTokenType, const PBYTE pData );
-    BOOL bParserError;
+    UINT iParserError;
     PBYTE pParserStream;
     struct html__node *pParserLastNode;
   };
@@ -453,7 +453,7 @@ struct html__text;
         return;
       }
       default :
-        pThis -> bParserError = __LINE__;
+        pThis -> iParserError = __LINE__;
         return;
     }
   }
@@ -476,7 +476,7 @@ struct html__text;
         return;
       }
       case HTT_DOCTYPE :
-        pThis -> bParserError = __LINE__;
+        pThis -> iParserError = __LINE__;
         return;
       case HTT_start_tag :
       {
@@ -509,7 +509,7 @@ struct html__text;
           case DNT_BR :
             goto P_Anything;
           default :
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
         }
       }
@@ -546,7 +546,7 @@ struct html__text;
         return;
       }
       case HTT_DOCTYPE :
-        pThis -> bParserError = __LINE__;
+        pThis -> iParserError = __LINE__;
         return;
       case HTT_start_tag :
       {
@@ -557,7 +557,7 @@ struct html__text;
           case DNT_HTML :
           {
             // TODO: Process the token using the rules for the "in body" insertion mode.
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
           }
           case DNT_HEAD :
@@ -586,7 +586,7 @@ struct html__text;
           case DNT_BR :
             goto P_Anything;
           default :
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
         }
       }
@@ -625,7 +625,7 @@ struct html__text;
         return;
       }
       case HTT_DOCTYPE :
-        pThis -> bParserError = __LINE__;
+        pThis -> iParserError = __LINE__;
         return;
       case HTT_start_tag :
       {
@@ -636,7 +636,7 @@ struct html__text;
           case DNT_HTML :
           {
             // TODO: Process the token using the rules for the "in body" insertion mode.
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
           }
           case DNT_BASE :
@@ -656,7 +656,7 @@ struct html__text;
             rHtmlNode_AppendChild ( pThis -> pParserLastNode, pE );
             pE -> pAttribs = pToken -> pAttribs;
             // TODO: Follow the generic RCDATA element parsing algorithm.
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
           }
           case DNT_NOSCRIPT :
@@ -665,7 +665,7 @@ struct html__text;
             {
               // TODO: Insert an HTML element for the token.
               // Switch the insertion mode to "in head noscript".
-              pThis -> bParserError = __LINE__;
+              pThis -> iParserError = __LINE__;
               return;
             }
           }
@@ -673,17 +673,17 @@ struct html__text;
           case DNT_STYLE :
           {
             // TODO: Follow the generic raw text element parsing algorithm.
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
           }
           case DNT_SCRIPT :
           {
             // TODO: Many Steps
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
           }
           case DNT_HEAD :
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
           default :
             goto P_Anything;
@@ -701,15 +701,15 @@ struct html__text;
           case DNT_BR :
             goto P_Anything;
           default :
-            pThis -> bParserError = __LINE__;
+            pThis -> iParserError = __LINE__;
             return;
         }
       }
       default :
       {
         P_Anything :
-        assert ( pThis -> pParserLastNode -> iType == DNT_HTML );
         pThis -> pParserLastNode = pThis -> pParserLastNode -> pParent;
+        assert ( pThis -> pParserLastNode -> iType == DNT_HTML );
         pThis -> rParserMode = rHtmlParserMode_after_head;
         pThis -> rParserMode ( pThis, iTokenType, pData );
         return;
@@ -720,7 +720,7 @@ struct html__text;
   void rHtmlParserMode_after_head ( struct html__document * const pThis, const UINT iTokenType, const PBYTE pData )
   {
     // TODO: https://www.w3.org/TR/html52/syntax.html#the-after-head-insertion-mode
-    pThis -> bParserError = __LINE__;
+    pThis -> iParserError = __LINE__;
     return;
   }
 
@@ -734,117 +734,120 @@ struct html__text;
     HTML_PRINT ( "Parsing file: \"%s\"\n", szFileName );
     HTML_PVERB ( "Buffer point %p with size %u\n", p, nSize );
 
-
-
     while ( !rCmpStr ( (PSTR)p, "<!DOCTYPE" ) ) { ++p; }
 
     #define HTML_STATE(a)\
-      a : HTML_PVERB ( "T: "#a"\n   symbol in %p '%c' (%u 0x%x)\n", p, (CHAR)(*p), (UINT)(*p), (UINT)(*p) );
+      a : HTML_PVERB ( "T: "#a"\n   symbol in %p '%c' (%u 0x%x)\n", p, (CHAR)(*p), (UINT)(*p), (UINT)(*p) ); while ( TRUE )
 
-    #define HTML_STATE_ERROR() HTML_PRINT ( "T ERROR: on line %d" , __LINE__ )
-
-    UINT iData = 0;
     struct html__token_tag token_tag;
-    void token_tag_reset ( )
-    {
-      memset ( &token_tag, 0, sizeof ( token_tag ) );
-    }
     PBYTE token_comment = NULL;
+    UINT iData = 0;
+
+    #define __SWITCH_TO(a) ++p; goto a;
+    #define __PARSE_ERROR() HTML_PRINT ( "T ERROR: on line %d\n" , __LINE__ )
+    #define __PARSE_FATAL() HTML_PRINT ( "T ERROR: on line %d\ni don't know whot to do...\n" , __LINE__ ); goto P___Finish;
+    #define __EMIT_CHAR(a)\
+      pDocument -> rParserMode ( pDocument, (a), NULL );\
+      if ( pDocument -> iParserError ) { goto P___Finish; }
+    #define __EMIT_EOF()\
+      pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );\
+      if ( pDocument -> iParserError ) { goto P___Finish; }
+    #define __EMIT_COMMENT()\
+      pDocument -> rParserMode ( pDocument, HTT_comment, token_comment );\
+      if ( pDocument -> iParserError ) { goto P___Finish; }
+    #define __EMIT_DOCTYPE()\
+      pDocument -> rParserMode ( pDocument, HTT_DOCTYPE, token_comment );\
+      if ( pDocument -> iParserError ) { goto P___Finish; }
+    #define __EMIT_TAG()\
+      pDocument -> rParserMode ( pDocument, iData, (PBYTE)(&token_tag) );\
+      if ( pDocument -> iParserError ) { goto P___Finish; }
+    #define __CONTINUE() ++p; continue;
+    #define __START_TAG_TOKEN()\
+      iData = HTT_start_tag;\
+      memset ( &token_tag, 0, sizeof ( token_tag ) );\
+      token_tag.pName = p;
+    #define __END_TAG_TOKEN()\
+      iData = HTT_end_tag;\
+      memset ( &token_tag, 0, sizeof ( token_tag ) );\
+      token_tag.pName = p;
+    #define __RECONSUME_IN(a) goto a;
 
     HTML_STATE ( P_Data_state )
+    {
       switch ( *p )
       {
+        // case '&' :
+          // TODO: Set the return state to the data state. Switch to the character reference state.
         case '<' :
-          ++p;
-          goto P_Tag_open_state;
-        case 0x00 : /* NULL */
-          HTML_STATE_ERROR();
-          goto P___Finish;
+          __SWITCH_TO ( P_Tag_open_state );
+        case 0x00 : // NULL
+          __PARSE_ERROR ( );
+          __EMIT_CHAR ( 0x00 );
+          __CONTINUE ( );
         case _EOF :
-          pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-          goto P___Finish;
+          __EMIT_EOF ( );
+          __CONTINUE ( );
         default :
-          pDocument -> rParserMode ( pDocument, (UINT)(*p), NULL );
-          ++p;
-          goto P_Data_state;
+          __EMIT_CHAR ( *p );
+          __CONTINUE ( );
       }
+    }
     // HTML_STATE ( P_RCDATA_state )
     // HTML_STATE ( P_RAWTEXT_state )
     // HTML_STATE ( P_Script_data_state )
     // HTML_STATE ( P_PLAINTEXT_state )
     HTML_STATE ( P_Tag_open_state )
+    {
       switch ( *p )
       {
         case '!' :
-          ++p;
-          goto P_Markup_declaration_open_state;
-        case '/' :
-          ++p;
-          goto P_End_tag_open_state;
+          __SWITCH_TO ( P_Markup_declaration_open_state );
+        // case '/' :
+          // __SWITCH_TO ( P_End_tag_open_state );
         case 'A' ... 'Z' :
         case 'a' ... 'z' :
-          iData = HTT_start_tag;
-          token_tag_reset ( );
-          token_tag.pName = p;
-          goto P_Tag_name_state;
-        case '?' :
-          HTML_STATE_ERROR();
-          token_comment = p+1;
-          goto P_Bogus_comment_state;
+          __START_TAG_TOKEN ( );
+          __RECONSUME_IN ( P_Tag_name_state );
+        // case '?' :
+          // TODO: Parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
         default :
-          HTML_STATE_ERROR();
-          pDocument -> rParserMode ( pDocument, '<', NULL );
-          goto P_Data_state;
+          __PARSE_ERROR ( );
+          __EMIT_CHAR ( '<' );
+          __RECONSUME_IN ( P_Data_state );
       }
-    HTML_STATE ( P_End_tag_open_state )
-      switch ( *p )
-      {
-        case 'A' ... 'Z' :
-        case 'a' ... 'z' :
-          iData = HTT_end_tag;
-          token_tag_reset ( );
-          token_tag.pName = p;
-          goto P_Tag_name_state;
-        case '>' :
-          HTML_STATE_ERROR();
-          ++p;
-          goto P_Data_state;
-        default :
-          HTML_STATE_ERROR();
-          token_comment = p+1;
-          goto P_Bogus_comment_state;
-      }
+    }
+    // HTML_STATE ( P_End_tag_open_state )
     HTML_STATE ( P_Tag_name_state )
+    {
       switch ( *p )
       {
         case 0x09 : /* TAB */
         case 0x0A : /* LF */
-        case 0X0C : /* FF */
-        case 0X20 : /* SPACE */
+        case 0x0C : /* FF */
+        case 0x20 : /* SPACE */
           *p = 0;
-          ++p;
-          // goto P_Before_attribute_name_state;
-          goto P___Finish;
+          __SWITCH_TO ( P_Before_attribute_name_state );
         case '/' :
-          // goto P_Self_closing_start_tag_state;
-          goto P___Finish;
+          *p = 0;
+          __SWITCH_TO ( P_Self_closing_start_tag_state );
+        case '>' :
+          *p = 0;
+          __EMIT_TAG ( );
+          __SWITCH_TO ( P_Data_state );
         case 'A' ... 'Z' :
           *p += 0x20;
-        case 'a' ... 'z' :
-          ++p;
-          goto P_Tag_name_state;
-        case 0x00 : /* NULL */
-          HTML_STATE_ERROR();
-          goto P___Finish;
+          __CONTINUE ( );
+        case 0x00 : // NULL
+          __PARSE_ERROR ( );
+          __CONTINUE ( );
         case _EOF :
-          HTML_STATE_ERROR();
-          pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-          goto P___Finish;
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
         default :
-          ++p;
-          goto P_Tag_name_state;
+          __CONTINUE ( );
       }
-
+    }
     // HTML_STATE ( P_RCDATA_less_than_sign_state )
     // HTML_STATE ( P_RCDATA_end_tag_open_state )
     // HTML_STATE ( P_RCDATA_end_tag_name_state )
@@ -868,70 +871,274 @@ struct html__text;
     // HTML_STATE ( P_Script_data_double_escaped_dash_dash_state )
     // HTML_STATE ( P_Script_data_double_escaped_less_than_sign_state )
     // HTML_STATE ( P_Script_data_double_escape_end_state )
-    // HTML_STATE ( P_Before_attribute_name_state )
-    // HTML_STATE ( P_Attribute_name_state )
-    // HTML_STATE ( P_After_attribute_name_state )
-    // HTML_STATE ( P_Before_attribute_value_state )
-    // HTML_STATE ( P_Attribute_value__double_quoted__state )
-    // HTML_STATE ( P_Attribute_value__single_quoted__state )
-    // HTML_STATE ( P_Attribute_value__unquoted__state )
-    // HTML_STATE ( P_After_attribute_value__quoted__state )
-    // HTML_STATE ( P_Self_closing_start_tag_state )
-    HTML_STATE ( P_Bogus_comment_state )
+    HTML_STATE ( P_Before_attribute_name_state )
+    {
+      switch( *p )
+      {
+        case 0x09 : /* TAB */
+        case 0x0A : /* LF */
+        case 0x0C : /* FF */
+        case 0x20 : /* SPACE */
+          *p = 0;
+          __CONTINUE ( );
+        case '/' :
+        case '>' :
+        case _EOF :
+          __RECONSUME_IN ( P_After_attribute_name_state );
+        case '=' :
+          __PARSE_ERROR ( );
+          // TODO: Start a new attribute in the current tag token. Set that attribute’s name to the current input character, and its value to the empty string.
+          __SWITCH_TO ( P_Attribute_name_state );
+        default :
+          // TODO: Start a new attribute in the current tag token. Set that attribute’s name and value to the empty string.
+          __RECONSUME_IN ( P_Attribute_name_state );
+      }
+    }
+    HTML_STATE ( P_Attribute_name_state )
+    {
       switch ( *p )
       {
+        case 0x09 : /* TAB */
+        case 0x0A : /* LF */
+        case 0x0C : /* FF */
+        case 0x20 : /* SPACE */
+        case '/' :
         case '>' :
-          pDocument -> rParserMode ( pDocument, HTT_comment, token_comment );
-          *p = 0;
-          ++p;
-          goto P_Data_state;
         case _EOF :
-          pDocument -> rParserMode ( pDocument, HTT_comment, token_comment );
-          pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-          goto P___Finish;
-        case 0x00 : /* NULL */
-          HTML_STATE_ERROR();
-          goto P___Finish;
+          __RECONSUME_IN ( P_After_attribute_name_state );
+        case '=' :
+          *p = 0;
+          __SWITCH_TO ( P_Before_attribute_value_state );
+        case 'A' ... 'Z' :
+          *p += 0x20;
+          // TODO: Append the lowercase version of the current input character (add 0x0020 to the character’s code point) to the current attribute’s name.
+        case 0x00 : // NULL
+          __PARSE_ERROR ( );
+          __CONTINUE ( );
+        case '\"' :
+        case '\'' :
+        case '<' :
+          __PARSE_ERROR ( );
         default :
-          ++p;
-          goto P_Bogus_comment_state;
+          // TODO: Append the current input character to the current attribute’s name.
+          __CONTINUE ( );
       }
-    HTML_STATE ( P_Markup_declaration_open_state )
-      if ( ( *p == '-' ) && ( p[1] == '-' ) )
+    }
+    HTML_STATE ( P_After_attribute_name_state )
+    {
+      switch ( *p )
       {
-        token_comment = p + 2;
-        P__Loc0 :
-          switch ( *p )
-          {
-            case '-' :
-              if ( rCmpStr ( (PSTR)(p+1), "->" ) )
-              {
-                *p = 0;
-                p += 3;
-                pDocument -> rParserMode ( pDocument, HTT_comment, token_comment );
-                goto P_Data_state;
-              }
-              goto P__Loc0;
-
-            case _EOF :
-              pDocument -> rParserMode ( pDocument, HTT_comment, token_comment );
-              pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-              goto P___Finish;
-            case 0x00 : /* NULL */
-              HTML_STATE_ERROR();
-              goto P___Finish;
-            default :
-              goto P__Loc0;
-          }
+        case 0x09 : /* TAB */
+        case 0x0A : /* LF */
+        case 0x0C : /* FF */
+        case 0x20 : /* SPACE */
+          __CONTINUE ( );
+        case '/' :
+          *p = 0;
+          __SWITCH_TO ( P_Self_closing_start_tag_state );
+        case '=' :
+          __SWITCH_TO ( P_Before_attribute_value_state );
+        case '>' :
+          *p = 0;
+          __EMIT_TAG ( );
+          __SWITCH_TO ( P_Data_state );
+        case _EOF :
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
+        default :
+          // TODO: Start a new attribute in the current tag token. Set that attribute’s name and value to the empty string.
+          __RECONSUME_IN ( P_Attribute_name_state );
+      }
+    }
+    HTML_STATE ( P_Before_attribute_value_state )
+    {
+      switch ( *p )
+      {
+        case 0x09 : /* TAB */
+        case 0x0A : /* LF */
+        case 0x0C : /* FF */
+        case 0x20 : /* SPACE */
+          // Ignore the character.
+          __CONTINUE ( );
+        case '\"' :
+          // Switch to the attribute value (double-quoted) state.
+          __SWITCH_TO ( P_Attribute_value__double_quoted__state );
+        case '\'' :
+          // Switch to the attribute value (single-quoted) state.
+          __SWITCH_TO ( P_Attribute_value__single_quoted__state );
+        case '>' :
+          // Parse error. Treat it as per the "anything else" entry below.
+          __PARSE_ERROR ( );
+        default :
+          // Reconsume in the attribute value (unquoted) state.
+          __RECONSUME_IN ( P_Attribute_value__unquoted__state );
+      }
+    }
+    HTML_STATE ( P_Attribute_value__double_quoted__state )
+    {
+      switch ( *p )
+      {
+        case 0x22 : // U+0022 QUOTATION MARK (")
+          // Switch to the after attribute value (quoted) state.
+          __SWITCH_TO ( P_After_attribute_value__quoted__state );
+        case 0x26 : // U+0026 AMPERSAND (&)
+          // TODO: Set the return state to the attribute value (double-quoted) state. Switch to the character reference state.
+          __PARSE_FATAL ( );
+        case 0x00 : // U+0000 NULL
+          // Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute’s value.
+          __PARSE_ERROR ( );
+          __CONTINUE ( );
+        case _EOF : // EOF
+          // Parse error. Emit an end-of-file token.
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
+        default : // Anything else
+          // TODO: Append the current input character to the current attribute’s value.
+          __CONTINUE ( );
+      }
+    }
+    HTML_STATE ( P_Attribute_value__single_quoted__state )
+    {
+      switch ( *p )
+      {
+        case 0x27 : // U+0027 APOSTROPHE (')
+          // Switch to the after attribute value (quoted) state.
+          __SWITCH_TO ( P_After_attribute_value__quoted__state );
+        case 0x26 : // U+0026 AMPERSAND (&)
+          // TODO: Set the return state to the attribute value (single-quoted) state. Switch to the character reference state.
+          __PARSE_FATAL ( );
+        case 0x00 : // U+0000 NULL
+          // Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute’s value.
+          __PARSE_ERROR ( );
+          __CONTINUE ( );
+        case _EOF : // EOF
+          // Parse error. Emit an end-of-file token.
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
+        default : // Anything else
+          // TODO: Append the current input character to the current attribute’s value.
+          __CONTINUE ( );
+      }
+    }
+    HTML_STATE ( P_Attribute_value__unquoted__state )
+    {
+      switch ( *p )
+      {
+        case 0x09 : // U+0009 CHARACTER TABULATION (tab)
+        case 0x0A : // U+000A LINE FEED (LF)
+        case 0x0C : // U+000C FORM FEED (FF)
+        case 0x20 : // U+0020 SPACE
+          // Switch to the before attribute name state.
+          __SWITCH_TO ( P_Before_attribute_name_state );
+        case 0x26 : // U+0026 AMPERSAND (&)
+          // TODO: Set the return state to the attribute value (unquoted) state. Switch to the character reference state.
+          __PARSE_FATAL ( );
+        case 0x3E : // U+003E GREATER-THAN SIGN (>)
+          // Switch to the data state. Emit the current tag token.
+          __EMIT_TAG ( );
+          __SWITCH_TO ( P_Data_state );
+        case 0x00 : // U+0000 NULL
+          // Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute’s value.
+          __PARSE_ERROR ( );
+          __CONTINUE ( );
+        case _EOF : // EOF
+          // Parse error. Emit an end-of-file token.
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
+        case 0x22 : // U+0022 QUOTATION MARK (")
+        case 0x27 : // U+0027 APOSTROPHE (')
+        case 0x3C : // U+003C LESS-THAN SIGN (<)
+        case 0x3D : // U+003D EQUALS SIGN (=)
+        case 0x60 : // U+0060 GRAVE ACCENT (`)
+          // Parse error. Treat it as per the "anything else" entry below.
+          __PARSE_ERROR ( );
+        default : // Anything else
+          // TODO: Append the current input character to the current attribute’s value.
+          __CONTINUE ( );
+      }
+    }
+    HTML_STATE ( P_After_attribute_value__quoted__state )
+    {
+      switch ( *p )
+      {
+        case 0x09 : // U+0009 CHARACTER TABULATION (tab)
+        case 0x0A : // U+000A LINE FEED (LF)
+        case 0x0C : // U+000C FORM FEED (FF)
+        case 0x20 : // U+0020 SPACE
+          // Switch to the before attribute name state.
+          __SWITCH_TO ( P_Before_attribute_name_state );
+        case 0x2F : // U+002F SOLIDUS (/)
+          // Switch to the self-closing start tag state.
+          __SWITCH_TO ( P_Self_closing_start_tag_state );
+        case 0x3E : // U+003E GREATER-THAN SIGN (>)
+          // Switch to the data state. Emit the current tag token.
+          __EMIT_TAG ( );
+          __SWITCH_TO ( P_Data_state );
+        case _EOF : // EOF
+          // Parse error. Emit an end-of-file token.
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
+        default : // Anything else
+          // Parse error. Reconsume in the before attribute name state.
+          __PARSE_ERROR ( );
+          __RECONSUME_IN ( P_Before_attribute_name_state );
+      }
+    }
+    HTML_STATE ( P_Self_closing_start_tag_state )
+    {
+      switch ( *p )
+      {
+        case 0x3E : // U+003E GREATER-THAN SIGN (>)
+        // Set the self-closing flag of the current tag token. Switch to the data state. Emit the current tag token.
+          token_tag.bSelfClosing = TRUE;
+          __EMIT_TAG ( );
+          __SWITCH_TO ( P_Data_state );
+        case _EOF : // EOF
+          // Parse error. Emit an end-of-file token.
+          __PARSE_ERROR ( );
+          __EMIT_EOF ( );
+          __CONTINUE ( );
+        default : // Anything else
+          // Parse error. Reconsume in the before attribute name state.
+          __PARSE_ERROR ( );
+          __RECONSUME_IN ( P_Before_attribute_name_state );
+      }
+    }
+    // HTML_STATE ( P_Bogus_comment_state )
+    HTML_STATE ( P_Markup_declaration_open_state )
+    {
+      if ( memcmp ( p, "--", 2 ) == 0 )
+      {
+        /* it's comment */
+        p += 2;
+        token_comment = p;
+        while ( memcmp ( p, "-->", 3 ) != 0 ) { ++p; }
+        *p = 0;
+        p += 2;
+        __EMIT_COMMENT ( );
+        __SWITCH_TO ( P_Data_state );
       }
       if ( rCmpStr ( (PSTR)p, "DOCTYPE" ) )
       {
+        /* it's DOCTYPE */
         p += 7;
-        goto P_DOCTYPE_state;
+        while ( *p == ' ' ) { ++p; }
+        token_comment = p;
+        while ( *p != '>' ) { ++p; }
+        *p = 0;
+        __EMIT_DOCTYPE ( );
+        __SWITCH_TO ( P_Data_state );
       }
-      HTML_STATE_ERROR();
-      token_comment = p;
-      goto P_Bogus_comment_state;
+      // TODO: CDATA
+      __PARSE_ERROR ( );
+      // TODO: Parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
+      goto P___Finish;
+    }
     // HTML_STATE ( P_Comment_start_state )
     // HTML_STATE ( P_Comment_start_dash_state )
     // HTML_STATE ( P_Comment_state )
@@ -942,72 +1149,9 @@ struct html__text;
     // HTML_STATE ( P_Comment_end_dash_state )
     // HTML_STATE ( P_Comment_end_state )
     // HTML_STATE ( P_Comment_end_bang_state )
-    HTML_STATE ( P_DOCTYPE_state )
-      switch ( *p )
-      {
-        case 0x09 : /* TAB */
-        case 0x0A : /* LF */
-        case 0X0C : /* FF */
-        case 0X20 : /* SPACE */
-          ++p;
-          goto P_Before_DOCTYPE_name_state;
-        case _EOF :
-          pDocument -> rParserMode ( pDocument, HTT_DOCTYPE, token_comment );
-          pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-          goto P___Finish;
-        default :
-          HTML_STATE_ERROR();
-          goto P_Before_DOCTYPE_name_state;
-      }
-    HTML_STATE ( P_Before_DOCTYPE_name_state )
-      switch ( *p )
-      {
-        case 0x09 : /* TAB */
-        case 0x0A : /* LF */
-        case 0X0C : /* FF */
-        case 0X20 : /* SPACE */
-          ++p;
-          goto P_Before_DOCTYPE_name_state;
-        case 0x00 : /* NULL */
-          HTML_STATE_ERROR();
-          goto P___Finish;
-        case _EOF :
-          pDocument -> rParserMode ( pDocument, HTT_DOCTYPE, token_comment );
-          pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-          goto P___Finish;
-        case 'A' ... 'Z' :
-          *p += 0x20;
-        default :
-          token_comment = p;
-          ++p;
-          goto P_DOCTYPE_name_state;
-      }
-    HTML_STATE ( P_DOCTYPE_name_state )
-    switch ( *p )
-      {
-        case 0x09 : /* TAB */
-        case 0x0A : /* LF */
-        case 0X0C : /* FF */
-        case 0X20 : /* SPACE */
-          ++p;
-          // goto P_After_DOCTYPE_name_state;
-          goto P_DOCTYPE_name_state;
-        case '>' :
-          pDocument -> rParserMode ( pDocument, HTT_DOCTYPE, token_comment );
-          goto P_Data_state;
-        case 0x00 : /* NULL */
-          HTML_STATE_ERROR();
-          goto P___Finish;
-        case _EOF :
-          pDocument -> rParserMode ( pDocument, HTT_DOCTYPE, token_comment );
-          pDocument -> rParserMode ( pDocument, HTT_end_of_file, NULL );
-          goto P___Finish;
-        case 'A' ... 'Z' :
-          *p += 0x20;
-        default :
-          ++p;
-          goto P_DOCTYPE_name_state;
-      }
+    // HTML_STATE ( P_DOCTYPE_state )
+    // HTML_STATE ( P_Before_DOCTYPE_name_state )
+    // HTML_STATE ( P_DOCTYPE_name_state )
     // HTML_STATE ( P_After_DOCTYPE_name_state )
     // HTML_STATE ( P_After_DOCTYPE_public_keyword_state )
     // HTML_STATE ( P_Before_DOCTYPE_public_identifier_state )
@@ -1032,7 +1176,8 @@ struct html__text;
     // HTML_STATE ( P_Decimal_character_reference_state )
     // HTML_STATE ( P_Numeric_character_reference_end_state )
     // HTML_STATE ( P_Character_reference_end_state )
-    HTML_STATE ( P___Finish )
+    P___Finish :
+    HTML_PRINT ( "ERROR: %u\n", pDocument -> iParserError );
     return pDocument;
   }
 
